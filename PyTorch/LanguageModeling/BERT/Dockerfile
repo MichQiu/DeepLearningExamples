@@ -14,7 +14,7 @@
 ARG FROM_IMAGE_NAME=nvcr.io/nvidia/pytorch:20.06-py3
 FROM nvcr.io/nvidia/tritonserver:20.06-v1-py3-clientsdk as trt
 FROM ${FROM_IMAGE_NAME}
-RUN sudo apt-get update && sudo apt-get install -y pbzip2 pv bzip2 cabextract
+RUN apt-get update && apt-get install -y pbzip2 pv bzip2 cabextract
 
 ENV BERT_PREP_WORKING_DIR /workspace/bert/data
 
@@ -34,6 +34,6 @@ RUN pip install --upgrade --no-cache-dir pip \
  tqdm boto3 requests six ipdb h5py html2text nltk progressbar onnxruntime \
  git+https://github.com/NVIDIA/dllogger wget
 
-RUN sudo apt-get install -y iputils-ping
+RUN apt-get install -y iputils-ping
 
 COPY . .
