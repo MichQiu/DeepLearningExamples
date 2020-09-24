@@ -11,9 +11,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-RUN apt-get update && apt-get install -y pbzip2 pv bzip2 cabextract
+ARG FROM_IMAGE_NAME=nvcr.io/nvidia/pytorch:20.06-py3
+FROM nvcr.io/nvidia/tritonserver:20.06-v1-py3-clientsdk as trt
+FROM ${FROM_IMAGE_NAME}
+RUN sudo apt-get update && sudo apt-get install -y pbzip2 pv bzip2 cabextract
 
 ENV BERT_PREP_WORKING_DIR /workspace/bert/data
+
+WORKDIR /workspace
+
+# Copy the perf_client over
+COPY --from=trt /workspace/install/ /workspace/install/
+ENV LD_LIBRARY_PATH /workspace/install/lib:${LD_LIBRARY_PATH}
+
+# Install trt python api
+RUN apt-get install libb64-0d
+RUN pip install /workspace/install/python/tensorrtserver*.whl
 
 WORKDIR /workspace/bert
 RUN pip install --upgrade --no-cache-dir pip \
@@ -21,6 +34,6 @@ RUN pip install --upgrade --no-cache-dir pip \
  tqdm boto3 requests six ipdb h5py html2text nltk progressbar onnxruntime \
  git+https://github.com/NVIDIA/dllogger wget
 
-RUN apt-get install -y iputils-ping
+RUN sudo apt-get install -y iputils-ping
 
 COPY . .
