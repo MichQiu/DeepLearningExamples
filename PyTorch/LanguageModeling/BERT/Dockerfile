@@ -31,7 +31,7 @@ RUN pip install /workspace/install/python/tensorrtserver*.whl
 WORKDIR /workspace/bert
 RUN pip install --upgrade --no-cache-dir pip \
  && pip install --no-cache-dir \
- tqdm boto3 requests six ipdb h5py html2text nltk progressbar onnxruntime \
+ tqdm boto3 requests six ipdb h5py html2text nltk progressbar onnxruntime pyrouge transformers \
  git+https://github.com/NVIDIA/dllogger wget
 
 RUN apt-get install -y iputils-ping
